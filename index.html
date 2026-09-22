@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatima | My Sister</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Poppins:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --background: #fcf9f5;
+            --foreground: #5c4033;
+            --card: #fffdf9;
+            --primary: #c96a7a;
+            --primary-foreground: #ffffff;
+            --secondary: #f4e8e1;
+            --secondary-foreground: #734a3e;
+            --muted: #f0e6de;
+            --muted-foreground: #8c7365;
+            --border: #e6d7cd;
+        }
+
+        body {
+            font-family: 'Poppins', 'Tajawal', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.1) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes pulseHeart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .animate-float-up { animation: floatUp linear infinite; }
+        .animate-pulse-heart { animation: pulseHeart 1.5s ease-in-out infinite; }
+        .perspective-1000 { perspective: 1000px; }
+        .rotate-x-180 { transform: rotateX(180deg); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden relative">
+
+    <!-- Background Floating Hearts & Elements -->
+    <div id="hearts-container" class="pointer-events-none fixed inset-0 z-0 overflow-hidden"></div>
+
+    <div class="relative z-10 mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-5 py-8 sm:max-w-lg">
+
+        <!-- 1. Login Screen (Envelope) -->
+        <div id="login-screen" class="flex w-full flex-col items-center gap-8 text-center">
+            <div id="envelope" class="perspective-1000 relative h-40 w-64 transition-transform duration-700">
+                <div class="absolute bottom-0 h-24 w-64 rounded-b-2xl bg-[#d48390] shadow-lg"></div>
+                <div class="absolute bottom-0 h-24 w-64 rounded-b-2xl bg-[#df95a1] shadow-sm"></div>
+                <div id="envelope-flap" class="absolute left-1/2 top-0 h-20 w-56 origin-top -translate-x-1/2 rounded-b-lg bg-[#eab0bb] shadow-md transition-transform duration-700" style="clip-path: polygon(0 0, 50% 100%, 100% 0);"></div>
+                <div class="absolute left-1/2 top-16 z-10 -translate-x-1/2 rounded-full bg-white p-3 shadow-md">
+                    <svg class="h-6 w-6 text-[#c96a7a]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#8c7365]">Enter Password</p>
+                <h1 class="text-2xl font-bold text-[#5c4033]">Best Sister Ever 💕</h1>
+            </div>
+
+            <div class="w-full max-w-xs space-y-4">
+                <div id="input-box" class="overflow-hidden rounded-full border border-[#e6d7cd] bg-white shadow-sm transition-all">
+                    <input type="password" id="pass-input" placeholder="Password..." class="w-full bg-transparent px-6 py-3 text-center text-[#5c4033] placeholder:text-[#8c7365] focus:outline-none font-medium">
+                </div>
+                <button onclick="checkPassword()" class="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#c96a7a] px-8 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:bg-[#b55866] hover:shadow-lg">
+                    <span class="animate-pulse-heart">✨</span>
+                    <span>Open Surprise</span>
+                    <span class="animate-pulse-heart">✨</span>
+                </button>
+                <p id="error-msg" class="text-sm font-medium text-red-500 hidden">Incorrect password, try again! 😅</p>
+            </div>
+        </div>
+
+        <!-- 2. Welcome Screen -->
+        <div id="welcome-screen" class="hidden w-full flex-col items-center gap-6 text-center pt-2">
+            <div class="relative flex items-center justify-center my-2">
+                <div class="absolute inset-0 rounded-full bg-[#c96a7a]/20 blur-xl"></div>
+                <div class="animate-pulse-heart relative text-5xl text-[#c96a7a] drop-shadow-md">💖</div>
+            </div>
+
+            <div class="min-h-[220px] w-full rounded-3xl bg-white/90 p-8 shadow-sm backdrop-blur-md border border-[#e6d7cd]/60 flex items-center justify-center">
+                <p id="welcome-text" dir="rtl" class="text-lg leading-loose text-[#5c4033] font-medium tracking-wide"></p>
+            </div>
+
+            <button id="next-btn" onclick="showMainScreen()" class="hidden mt-6 inline-flex items-center gap-2 rounded-full border border-[#c96a7a]/30 bg-[#f4e8e1] px-9 py-3.5 text-base font-bold text-[#734a3e] shadow-sm transition-all hover:bg-[#ebd7cd]">
+                <span>Next</span>
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+
+        <!-- 3. Main Screen -->
+        <div id="main-screen" class="hidden w-full flex-col gap-10 pb-28">
+            <div class="text-center pt-4 mb-2">
+                <h1 class="text-3xl font-bold tracking-wide text-[#5c4033]">
+                    Best Sister In The World <span class="text-[#c96a7a] animate-pulse-heart inline-block">🌸</span>
+                </h1>
+            </div>
+
+            <!-- Image Gallery (6 Images) -->
+            <section id="memories" class="space-y-6 pt-2">
+                <div class="text-center text-xl font-bold text-[#5c4033] mb-4">Memories 📸</div>
+                <div class="flex flex-col gap-8">
+                  
+                  
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo2.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo2">
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo3.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo3">
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo4.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo4">
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo5.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo5">
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo6.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo6">
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo7.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo6">
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo8.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo6">
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo9.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo6">
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo10.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo6">
+                    </div>
+                    <div class="rounded-2xl bg-white p-3 pb-4 shadow-md border border-[#e6d7cd]/50">
+                        <img src="photo11.jpeg" class="aspect-[4/5] w-full object-cover rounded-xl shadow-inner" alt="photo6">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interactive Buttons -->
+            <div class="grid grid-cols-2 gap-4 pt-6">
+                <button onclick="openLetter()" class="flex items-center justify-center gap-2 rounded-full bg-[#c96a7a] px-5 py-3.5 text-sm font-bold text-white shadow-md transition-transform hover:scale-105">
+                    <span>✉️</span><span>Message</span><span>✨</span>
+                </button>
+                <a href="#memories" class="flex items-center justify-center gap-2 rounded-full border border-[#c96a7a]/30 bg-white px-5 py-3.5 text-sm font-bold text-[#5c4033] shadow-sm transition-transform hover:scale-105">
+                    <span>🖼️</span><span>Photos</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Player -->
+    <div id="music-bar" class="hidden fixed bottom-4 left-4 right-4 z-20 mx-auto max-w-md rounded-[1.75rem] bg-white/95 p-3 shadow-lg backdrop-blur-md border border-[#e6d7cd]/50">
+        <audio id="bg-music" src="WhatsApp Video 2026-09-22 at 4.47.06 PM.mp3" loop preload="auto"></audio>
+        <div class="flex items-center gap-3">
+            <div class="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-[#e6d7cd]">
+                <img src="photo1.jpeg" class="h-full w-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=100&auto=format&fit=crop'">
+            </div>
+            <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-bold text-[#5c4033]">Background Music</p>
+                <p class="text-xs text-[#8c7365]">Fatima & Brother ✨</p>
+            </div>
+            <div class="flex items-center gap-1">
+                <button onclick="toggleMusic()" id="play-btn" class="rounded-full bg-[#c96a7a] p-2.5 text-white shadow-sm hover:bg-[#b55866]">
+                    <svg id="play-icon" class="h-5 w-5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Letter Modal (Arabic Message Inside) -->
+    <div id="letter-modal" class="hidden fixed inset-0 z-30 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm" onclick="closeLetter()">
+        <div class="relative w-full max-w-sm rounded-[2rem] bg-white p-8 shadow-2xl text-center border border-[#e6d7cd]/50" onclick="event.stopPropagation()">
+            <button onclick="closeLetter()" class="absolute right-4 top-4 rounded-full p-2 text-[#8c7365] hover:bg-[#f0e6de]">✕</button>
+            <div class="mb-4 text-5xl">🌸</div>
+            <h2 class="mb-6 text-xl font-bold text-[#5c4033]">To Fatima</h2>
+            <div dir="rtl" class="space-y-4 text-base leading-relaxed text-[#5c4033] font-medium">
+                <p>ربنا ميحرمني منك أبداً يروحييييي ويخليكي ليا..  ❤️</p>
+                <p>ربنا يجعلني دايماً سندك ف الدنيا وأقدر أعوضك عن أي حاجة ناقصة في حياتك يروح قلبي.. يارب أقدر أعملك كل اللي نفسك فيه وأشوفك مبسوطة دايماً ✨❤️</p>
+
+            </div>
+            <div dir="rtl" class="mt-8 text-sm font-semibold text-[#8c7365]"> روح قلبييي ❤️</div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bg-music');
+        let isPlaying = false;
+
+        function playAudio() {
+            audio.play().then(() => {
+                isPlaying = true;
+                updatePlayButton();
+            }).catch(err => {
+                console.log("User interaction required to play audio");
+            });
+        }
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+            } else {
+                audio.play();
+                isPlaying = true;
+            }
+            updatePlayButton();
+        }
+
+        function updatePlayButton() {
+            const btnIcon = document.getElementById('play-icon');
+            if (isPlaying) {
+                btnIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+            } else {
+                btnIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+            }
+        }
+
+        // Floating elements
+        const heartsContainer = document.getElementById('hearts-container');
+        for (let i = 0; i < 15; i++) {
+            const h = document.createElement('span');
+            h.className = 'animate-float-up absolute bottom-0 block text-[#c96a7a]';
+            h.style.left = Math.random() * 100 + '%';
+            h.style.fontSize = (12 + Math.random() * 20) + 'px';
+            h.style.animationDelay = (Math.random() * 8) + 's';
+            h.style.animationDuration = (8 + Math.random() * 8) + 's';
+            h.style.opacity = 0.3;
+            h.innerHTML = i % 2 === 0 ? '🌸' : '✨';
+            heartsContainer.appendChild(h);
+        }
+
+        // Password check
+        function checkPassword() {
+            const val = document.getElementById('pass-input').value.trim().toLowerCase();
+            if (val === 'love' || val === 'sister' || val === 'fatima') {
+                playAudio();
+                document.getElementById('envelope-flap').classList.add('rotate-x-180');
+                document.getElementById('envelope').style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('welcome-screen').classList.remove('hidden');
+                    startWelcomeAnimation();
+                }, 700);
+            } else {
+                const err = document.getElementById('error-msg');
+                err.classList.remove('hidden');
+                setTimeout(() => err.classList.add('hidden'), 2000);
+            }
+        }
+
+        // Arabic Welcome Message Text
+        const welcomeMessage = "حبيت أعملك مفاجأة بسيطة كدا يروحييييي ربنا ميحرمني منك ابدا يحبيبتي ويجعلني سندك ف الدنيا واعودك اني اعوضك عن اي حاجه ناقصه ف حياتك يروح قلبي ويارب اقدر احققلك كل اللي نفسك فيه ✨🌸";
+        
+        function startWelcomeAnimation() {
+            const textEl = document.getElementById('welcome-text');
+            const words = welcomeMessage.split(" ");
+            let i = 0;
+            textEl.innerHTML = "";
+            const interval = setInterval(() => {
+                if (i < words.length) {
+                    textEl.innerHTML += words[i] + " ";
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    document.getElementById('next-btn').classList.remove('hidden');
+                }
+            }, 180);
+        }
+
+        // Show main screen
+        function showMainScreen() {
+            playAudio();
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('main-screen').classList.remove('hidden');
+            document.getElementById('music-bar').classList.remove('hidden');
+        }
+
+        // Modal controls
+        function openLetter() { document.getElementById('letter-modal').classList.remove('hidden'); }
+        function closeLetter() { document.getElementById('letter-modal').classList.add('hidden'); }
+    </script>
+</body>
+</html>
